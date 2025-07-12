@@ -36,6 +36,9 @@ public class PlayerController : MonoBehaviour
 
     //АјАн
     private bool isShoot;
+    private bool isWaiting;
+    public float WaitMaxTime;
+    private float WaitTimer;
     public float shootDlay = 0.5f;
     public int bulletMax;
     private int bulletCnt;
@@ -90,6 +93,8 @@ public class PlayerController : MonoBehaviour
                 transform.eulerAngles = new Vector3(0, 180, 0);
             }
 
+            bulletQnion = transform.rotation;
+
             if (Input.GetKeyDown(KeyCode.Space) && jumpCnt > 0)
             {
                 jumpCnt--;
@@ -97,19 +102,28 @@ public class PlayerController : MonoBehaviour
                 playerRb.AddForce(Vector3.up * jumpForce, ForceMode2D.Impulse);
             }
 
-            if (Input.GetKeyDown(KeyCode.X) && !isShoot)
+            if(isWaiting)
             {
+                WaitTimer -= Time.deltaTime;
+
                 if (Input.GetKey(KeyCode.DownArrow))
                 {
                     isDown = true;
                     bulletQnion = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, -90);
                 }
-                else
+
+                if (WaitTimer <= 0f)
                 {
-                    bulletQnion = transform.rotation;
+                    isShoot = true;
+                    isWaiting = false;
+                    StartCoroutine(Shoot(bulletCnt, bulletQnion));
                 }
-                isShoot = true;
-                StartCoroutine(Shoot(bulletCnt, bulletQnion));
+            }
+
+            if (Input.GetKeyDown(KeyCode.X) && !isShoot)
+            {
+                isWaiting = true;
+                WaitTimer = WaitMaxTime;
             }
         }
     }

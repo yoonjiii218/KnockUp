@@ -11717,6 +11717,7 @@ MonoBehaviour:
   jumpForce: 5
   gravityModifier: 1
   jumpMax: 2
+  WaitMaxTime: 0.08
   shootDlay: 0.5
   bulletMax: 4
   knockForce: 5
